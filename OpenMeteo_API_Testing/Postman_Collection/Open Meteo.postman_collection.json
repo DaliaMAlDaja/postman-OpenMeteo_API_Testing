@@ -1,0 +1,662 @@
+{
+  "info": {
+    "_postman_id": "ba82817d-f698-4945-897b-803cbf58ea3b",
+    "name": "Open Meteo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52227137",
+    "_collection_link": "https://go.postman.co/collection/52227137-ba82817d-f698-4945-897b-803cbf58ea3b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "TC‑001 – Hourly Forecast (Temp/Humidity/Wind)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?latitude={{latitude}}&longitude={{longitude}}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone={{timezone}}&forecast_day=14",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "hourly",
+              "value": "temperature_2m,relative_humidity_2m,wind_speed_10m"
+            },
+            {
+              "key": "timezone",
+              "value": "{{timezone}}"
+            },
+            {
+              "key": "forecast_day",
+              "value": "14"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑002 – Daily Forecast (Max/Min Temperature)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?latitude={{latitude}}&longitude={{longitude}}&daily=temperature_2m_max,temperature_2m_min&timezone={{timezone}}&forecast_day =7",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "daily",
+              "value": "temperature_2m_max,temperature_2m_min"
+            },
+            {
+              "key": "timezone",
+              "value": "{{timezone}}"
+            },
+            {
+              "key": "forecast_day ",
+              "value": "7"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑003 – Missing Latitude Parameter",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Missing Latitude → Should NOT return success (200)\r",
+              "pm.test(\"Missing Latitude → Status code should NOT be 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.not.equal(200);\r",
+              "});\r",
+              "\r",
+              "//Missing Latitude → Expected an error (400 or 422)\r",
+              "pm.test(\"Missing Latitude → Expected status 400 or 422\", function () {\r",
+              "    pm.expect([400, 422]).to.include(pm.response.code);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?longitude={{longitude}}&daily=temperature_2m_max,temperature_2m_min&timezone={{timezone}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "daily",
+              "value": "temperature_2m_max,temperature_2m_min"
+            },
+            {
+              "key": "timezone",
+              "value": "{{timezone}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑004 – Missing Longitude Parameter",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Missing Longitude → Should NOT return success (200)\r",
+              "pm.test(\"Missing Longitude → Status code should NOT be 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.not.equal(200);\r",
+              "});\r",
+              "\r",
+              "//Missing Longitude → Expected error status (400 or 422)\r",
+              "pm.test(\"Missing Longitude → Expected status 400 or 422\", function () {\r",
+              "    pm.expect([400, 422]).to.include(pm.response.code);\r",
+              "});\r",
+              "\r",
+              "//Missing Longitude → Response should NOT contain hourly data\r",
+              "let json = {};\r",
+              "try { json = pm.response.json(); } catch(e) {}\r",
+              "\r",
+              "pm.test(\"Missing Longitude → Response should NOT contain hourly data\", function () {\r",
+              "    pm.expect(json.hourly).to.be.undefined;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?latitude={{latitude}}&hourly=temperature_2m&timezone={{timezone}}&forecast_day=14",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "hourly",
+              "value": "temperature_2m"
+            },
+            {
+              "key": "timezone",
+              "value": "{{timezone}}"
+            },
+            {
+              "key": "forecast_day",
+              "value": "14"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑005 – Invalid Latitude (Non‑Numeric Value)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Invalid Latitude (non-numeric) → Should NOT return success (200)\r",
+              "pm.test(\"Invalid Latitude → Status code should NOT be 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.not.equal(200);\r",
+              "});\r",
+              "\r",
+              "//Invalid Latitude (non-numeric) → Expected an error status (400 or 422)\r",
+              "pm.test(\"Invalid Latitude → Expected status 400 or 422\", function () {\r",
+              "    pm.expect([400, 422]).to.include(pm.response.code);\r",
+              "});\r",
+              "\r",
+              "//Invalid Latitude → Response should NOT contain hourly data\r",
+              "let json = {};\r",
+              "try { json = pm.response.json(); } catch(e) {}\r",
+              "\r",
+              "pm.test(\"Invalid Latitude → hourly data MUST NOT exist\", function () {\r",
+              "    pm.expect(json.hourly).to.be.undefined;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?longitude={{longitude}}&latitude=abc&hourly=temperature_2m",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "longitude",
+              "value": "{{longitude}}",
+              "type": "text"
+            },
+            {
+              "key": "latitude",
+              "value": "abc"
+            },
+            {
+              "key": "hourly",
+              "value": "temperature_2m"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑006 – Latitude/Longitude Out of Range",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Out of Range Latitude/Longitude → Status code MUST NOT be 200\r",
+              "pm.test(\"Out of Range → Status should NOT be 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.not.equal(200);\r",
+              "});\r",
+              "\r",
+              "//Out of Range Latitude/Longitude → Expected 400 Bad Request\r",
+              "pm.test(\"Out of Range → Expected status 400\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(400);\r",
+              "});\r",
+              "\r",
+              "// Parse response safely\r",
+              "let json = {};\r",
+              "try { json = pm.response.json(); } catch(e) {}\r",
+              "\r",
+              "\r",
+              "// ❌ Out of Range → Reason message should mention latitude range\r",
+              "pm.test(\"Out of Range → Error message should mention '-90 to 90'\", function () {\r",
+              "    pm.expect(json.reason).to.include(\"-90\");\r",
+              "    pm.expect(json.reason).to.include(\"90\");\r",
+              "});\r",
+              "\r",
+              "//Out of Range → Should NOT contain hourly data\r",
+              "pm.test(\"Out of Range → Response should NOT contain hourly\", function () {\r",
+              "    pm.expect(json.hourly).to.be.undefined;\r",
+              "});\r",
+              "\r",
+              "\r",
+              "// Out of Range → error flag should be true\r",
+              "pm.test(\"Out of Range → error flag should be true\", function () {\r",
+              "    pm.expect(json.error).to.eql(true);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?longitude=200&latitude=200&hourly=temperature_2m",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "longitude",
+              "value": "200"
+            },
+            {
+              "key": "latitude",
+              "value": "200"
+            },
+            {
+              "key": "hourly",
+              "value": "temperature_2m"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑007 – Multiple Hourly Variables (Temp/Humidity/Wind/Cloud Cover)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Status must be 200 (success)\r",
+              "pm.test(\"Multiple Hourly → Status code is 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(200);\r",
+              "});\r",
+              "\r",
+              "// Parse JSON safely\r",
+              "let json = {};\r",
+              "try { json = pm.response.json(); } catch(e) {}\r",
+              "\r",
+              "//Response must contain 'hourly'\r",
+              "pm.test(\"Multiple Hourly → 'hourly' object must exist\", function () {\r",
+              "    pm.expect(json.hourly).to.exist;\r",
+              "});\r",
+              "\r",
+              "//Required hourly variables must exist\r",
+              "pm.test(\"Multiple Hourly → Required variables must exist\", function () {\r",
+              "    pm.expect(json.hourly.temperature_2m).to.exist;\r",
+              "    pm.expect(json.hourly.relative_humidity_2m).to.exist;\r",
+              "    pm.expect(json.hourly.wind_speed_10m).to.exist;\r",
+              "    pm.expect(json.hourly.cloud_cover).to.exist;\r",
+              "});\r",
+              "\r",
+              "//All arrays should have the same length\r",
+              "pm.test(\"Multiple Hourly → All arrays must align in length\", function () {\r",
+              "    let t = json.hourly.time.length;\r",
+              "    pm.expect(json.hourly.temperature_2m.length).to.equal(t);\r",
+              "    pm.expect(json.hourly.relative_humidity_2m.length).to.equal(t);\r",
+              "    pm.expect(json.hourly.wind_speed_10m.length).to.equal(t);\r",
+              "    pm.expect(json.hourly.cloud_cover.length).to.equal(t);\r",
+              "});\r",
+              "\r",
+              "//Timezone info must exist\r",
+              "pm.test(\"Multiple Hourly → Timezone must be present\", function () {\r",
+              "    pm.expect(json.timezone).to.exist;\r",
+              "});\r",
+              "\r",
+              "//hourly_units must include variable units\r",
+              "pm.test(\"Multiple Hourly → hourly_units must include all variable units\", function () {\r",
+              "    pm.expect(json.hourly_units.temperature_2m).to.exist;\r",
+              "    pm.expect(json.hourly_units.relative_humidity_2m).to.exist;\r",
+              "    pm.expect(json.hourly_units.wind_speed_10m).to.exist;\r",
+              "    pm.expect(json.hourly_units.cloud_cover).to.exist;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?longitude={{longitude}}&latitude={{latitude}}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,cloud_cover&timezone=auto",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "longitude",
+              "value": "{{longitude}}",
+              "type": "text"
+            },
+            {
+              "key": "latitude",
+              "value": "{{latitude}}",
+              "type": "text"
+            },
+            {
+              "key": "hourly",
+              "value": "temperature_2m,relative_humidity_2m,wind_speed_10m,cloud_cover",
+              "type": "text"
+            },
+            {
+              "key": "timezone",
+              "value": "auto",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑008 – Timezone Handling (Asia/Amman)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?longitude={{longitude}}&latitude={{latitude}}&daily=temperature_2m_max&timezone=Asia/Amman",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "daily",
+              "value": "temperature_2m_max"
+            },
+            {
+              "key": "timezone",
+              "value": "Asia/Amman"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑009 – Unsupported/Unknown Hourly Variable",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Status code must NOT be 200\r",
+              "pm.test(\"Unknown Variable → Status should NOT be 200\", function () {\r",
+              "    pm.expect(pm.response.code).to.not.equal(200);\r",
+              "});\r",
+              "\r",
+              "//Status should be 400 (Bad Request)\r",
+              "pm.test(\"Unknown Variable → Expected status 400\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(400);\r",
+              "});\r",
+              "\r",
+              "// Parse JSON safely\r",
+              "let json = {};\r",
+              "try { json = pm.response.json(); } catch(e) {}\r",
+              "\r",
+              "//Error field must be true\r",
+              "pm.test(\"Unknown Variable → error must be true\", function () {\r",
+              "    pm.expect(json.error).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "//reason field must exist\r",
+              "pm.test(\"Unknown Variable → 'reason' should exist\", function () {\r",
+              "    pm.expect(json.reason).to.exist;\r",
+              "});\r",
+              "\r",
+              "//reason should mention invalid variable\r",
+              "pm.test(\"Unknown Variable → reason should mention invalid input\", function () {\r",
+              "    pm.expect(json.reason).to.include(\"invalid\");\r",
+              "    pm.expect(json.reason.toLowerCase()).to.include(\"abc\");\r",
+              "});\r",
+              "\r",
+              "//Should NOT contain hourly\r",
+              "pm.test(\"Unknown Variable → hourly should NOT exist\", function () {\r",
+              "    pm.expect(json.hourly).to.be.undefined;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?latitude={{latitude}}&longitude={{longitude}}&hourly=abc",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "hourly",
+              "value": "abc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC‑010 – Performance Test (Response Time < 2000ms)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Get response time\r",
+              "let time = pm.response.responseTime;\r",
+              "\r",
+              "//Check that response time is under 2000 ms\r",
+              "pm.test(\"Performance → Response time < 2000ms\", function () {\r",
+              "    pm.expect(time).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "// Print response time in the test name itself\r",
+              "pm.test(\"Response time = \" + time + \" ms\", function () {\r",
+              "    pm.expect(time).to.be.a(\"number\");\r",
+              "});\r",
+              "\r",
+              "//Also log it to the Postman Console\r",
+              "console.log(\"Actual Response Time (ms): \" + time);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/v1/forecast?latitude={{latitude}}&longitude={{longitude}}&daily=temperature_2m_max",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "v1",
+            "forecast"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "{{latitude}}"
+            },
+            {
+              "key": "longitude",
+              "value": "{{longitude}}"
+            },
+            {
+              "key": "daily",
+              "value": "temperature_2m_max"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
